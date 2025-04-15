@@ -1,0 +1,19 @@
+列出磁碟區 OS 的資料夾 PATH
+磁碟區序號為 9AC9-A0FE
+C:.
+|   App.css
+|   App.js
+|   App.test.js
+|   index.css
+|   index.js
+|   logo.svg
+|   ouput.txt
+|   reportWebVitals.js
+|   setupTests.js
+|   
+\---components
+        Chatbot.js
+        DiseaseList.js
+        Home.js
+        Navbar.js
+        
