@@ -10,9 +10,10 @@ function HealthInfo() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/health-info')
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    axios.get(`${API_URL}/api/health-info`)
       .then((response) => {
-        console.log('API 響應:', response.data);
+        console.log('HealthInfo API 響應:', response.data); // 添加日誌
         setDiseases(response.data);
         setFilteredDiseases(response.data);
         setError(null);
@@ -26,7 +27,7 @@ function HealthInfo() {
   useEffect(() => {
     setFilteredDiseases(
       diseases.filter((disease) =>
-        disease.name.toLowerCase().includes(searchTerm.toLowerCase())
+        disease.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
       )
     );
   }, [searchTerm, diseases]);
@@ -63,7 +64,9 @@ function HealthInfo() {
       {error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : filteredDiseases.length === 0 ? (
-        <p className="text-secondary text-center">無疾病數據</p>
+        <p className="text-secondary text-center">
+          {searchTerm ? '無匹配的疾病數據' : '無疾病數據'}
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredDiseases.map((disease, index) => (

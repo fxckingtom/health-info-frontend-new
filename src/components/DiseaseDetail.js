@@ -9,14 +9,18 @@ function DiseaseDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     axios
-      .get(`http://localhost:5000/api/diseases/${icdCode}`)
+      .get(`${API_URL}/api/diseases/${icdCode}`)
       .then((response) => {
+        console.log('DiseaseDetail API 響應:', response.data); // 添加日誌
         setDisease(response.data);
         setLoading(false);
+        setError(null);
       })
       .catch((error) => {
-        setError('無法載入疾病資訊');
+        console.error('獲取疾病詳情失敗:', error);
+        setError(`無法載入疾病資訊：${error.message}`);
         setLoading(false);
       });
   }, [icdCode]);
