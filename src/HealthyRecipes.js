@@ -1,0 +1,105 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+
+const HealthyRecipes = () => {
+  const [recipes, setRecipes] = useState([]);
+  const [foodFilter, setFoodFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/healthy-recipes`);
+        setRecipes(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+        setLoading(false);
+      }
+    };
+    fetchRecipes();
+  }, []);
+
+  const handleFilterChange = async (e) => {
+    const food = e.target.value;
+    setFoodFilter(food);
+    if (food) {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/healthy-recipes-by-food?food=${food}`);
+        setRecipes(response.data);
+      } catch (error) {
+        console.error('Error filtering recipes:', error);
+      }
+    } else {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/healthy-recipes`);
+      setRecipes(response.data);
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center text-2xl mt-10">載入中...</div>;
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <motion.h1
+        className="text-4xl font-bold text-blue-600 mb-8"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        健康食譜
+      </motion.h1>
+      <div className="mb-4">
+        <input
+          type="text"
+          value={foodFilter}
+          onChange={handleFilterChange}
+          placeholder="輸入食物名稱（如 Spinach）"
+          className="p-2 border rounded"
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {recipes.map((recipe, index) => (
+          <motion.div
+            key={index}
+            className="bg-white rounded-lg shadow-lg p-6"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
+          >
+            <h2 className="text-2xl font-semibold text-blue-500 mb-2">{recipe.name}</h2>
+            <p className="text-gray-700 mb-2">
+              <strong>主要食材：</strong> {recipe.food}
+            </p>
+            <p className="text-gray-700 mb-2">
+              <strong>適合疾病：</strong> {recipe.suitable_diseases.join(', ')}
+            </p>
+            <p className="text-gray-700 mb-2">
+              <strong>食材：</strong>
+            </p>
+            <ul className="list-disc list-inside mb-2">
+              {recipe.ingredients.map((ingredient, i) => (
+                <li key={i}>{ingredient}</li>
+              ))}
+            </ul>
+            <p className="text-gray-700 mb-2">
+              <strong>步驟：</strong>
+            </p>
+            <ol className="list-decimal list-inside mb-2">
+              {recipe.steps.map((step, i) => (
+                <li key={i}>{step}</li>
+              ))}
+            </ol>
+            <p className="text-gray-700">
+              <strong>為何適合：</strong> {recipe.explanation}
+            </p>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default HealthyRecipes;

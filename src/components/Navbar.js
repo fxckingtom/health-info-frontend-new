@@ -9,6 +9,7 @@ function Navbar() {
           <Link to="/" className="hover:underline">首頁</Link>
           <Link to="/health-info" className="hover:underline">健康資訊</Link>
           <Link to="/health-log" className="hover:underline">健康日誌</Link>
+          <Link to="/healthy-recipes" className="hover:underline">健康食譜</Link>
         </div>
       </div>
     </nav>

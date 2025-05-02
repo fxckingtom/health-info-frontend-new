@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "homepage": "https://fxckingtom.github.io/health-info-frontend",
+  "homepage": "https://fxckingtom.github.io/health-info-frontend-new",
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
