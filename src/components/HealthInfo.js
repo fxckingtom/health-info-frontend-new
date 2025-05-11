@@ -98,13 +98,12 @@ function HealthInfo() {
             <div className="bg-white p-8 rounded-lg max-w-lg w-full mx-4">
               <h2 className="text-3xl font-bold text-primary mb-4">{selectedDisease.name}</h2>
               <p className="text-secondary mb-4">{selectedDisease.description}</p>
-              <h3 className="text-xl font-semibold text-primary mb-2">建議食物</h3>
+              <h3 className="text-xl font-semibold text-primary mb-2">處理建議</h3>
               <ul className="list-disc pl-6 text-secondary mb-6">
-                {selectedDisease?.suitable_foods?.map((food, index) => (
-                  <li key={index}>{food}</li>
+                {selectedDisease?.handling?.map((tip, index) => (
+                  <li key={index}>{tip}</li>
                 ))}
               </ul>
-
               <button
                 onClick={() => setSelectedDisease(null)}
                 className="w-full bg-primary text-white p-2 rounded hover:bg-blue-700 transition"
