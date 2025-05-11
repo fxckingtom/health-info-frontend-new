@@ -1,13 +1,31 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function MapComponent() {
-  const mapRef = useRef(null); // 綁定地圖顯示的位置
+  const mapRef = useRef(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
+  // 載入 Google Maps script
   useEffect(() => {
-    // 確保 Google Maps script 已經載入
-    if (window.google) {
+    const existingScript = document.getElementById('googleMaps');
+
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.id = 'googleMaps';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => setMapLoaded(true); // script 載入完成
+      document.body.appendChild(script);
+    } else {
+      setMapLoaded(true); // script 已經存在，直接設為載入完成
+    }
+  }, []);
+
+  // 地圖初始化
+  useEffect(() => {
+    if (mapLoaded && window.google) {
       const map = new window.google.maps.Map(mapRef.current, {
-        center: { lat: 25.033964, lng: 121.564468 }, // 台北101
+        center: { lat: 25.033964, lng: 121.564468 },
         zoom: 15,
       });
 
@@ -17,7 +35,7 @@ function MapComponent() {
         title: '台北101',
       });
     }
-  }, []);
+  }, [mapLoaded]);
 
   return (
     <div style={{ padding: '20px' }}>
