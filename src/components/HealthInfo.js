@@ -12,6 +12,10 @@ function HealthInfo() {
   useEffect(() => {
     const API_URL = process.env.REACT_APP_API_URL || 'https://health-info-backend-new.onrender.com';
     axios.get(`${API_URL}/api/health-info`)
+      headers: {
+        'Accept-Language': 'zh-TW',
+      }
+    })
       .then((response) => {
         console.log('HealthInfo API 響應:', response.data); // 添加日誌
         setDiseases(response.data);
