@@ -100,7 +100,7 @@ function HealthInfo() {
               <p className="text-secondary mb-4">{selectedDisease.description}</p>
               <h3 className="text-xl font-semibold text-primary mb-2">處理建議</h3>
               <ul className="list-disc pl-6 text-secondary mb-6">
-                {selectedDisease.handling.map((tip, index) => (
+                {selectedDisease?.handling?.map((tip, index) => (
                   <li key={index}>{tip}</li>
                 ))}
               </ul>
