@@ -10,7 +10,7 @@ function HealthInfo() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const API_URL = process.env.REACT_APP_API_URL || 'https://health-info-backend-new.onrender.com';
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     axios.get(`${API_URL}/api/health-info`)
       .then((response) => {
         console.log('HealthInfo API 響應:', response.data); // 添加日誌
