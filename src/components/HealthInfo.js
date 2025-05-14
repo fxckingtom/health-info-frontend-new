@@ -79,7 +79,7 @@ function HealthInfo() {
               onClick={() => setSelectedDisease(disease)}
               className="bg-white p-6 rounded-lg shadow-md cursor-pointer transform transition-all hover:scale-105 hover:shadow-xl flex flex-col items-center"
             >
-              <h2 className="text-2xl font-semibold text-primary mb-2">{disease.name}</h2>
+              <h2 className="text-2xl font-semibold text-primary mb-2">{classname.name}</h2>
               <p className="text-secondary text-center">{disease.tagline}</p>
             </motion.div>
           ))}
