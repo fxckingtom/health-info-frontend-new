@@ -5,7 +5,10 @@ function HealthLog() {
   const [formData, setFormData] = useState({
     bloodPressure: '',
     weight: '',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
+    medicationTaken: false,
+    mood: ''
   });
 
   useEffect(() => {
@@ -16,23 +19,26 @@ function HealthLog() {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newLog = {
-      ...formData,
-      id: Date.now()
-    };
+    const newLog = { ...formData, id: Date.now() };
     const updatedLogs = [newLog, ...logs];
     setLogs(updatedLogs);
     localStorage.setItem('healthLogs', JSON.stringify(updatedLogs));
     setFormData({
       bloodPressure: '',
       weight: '',
-      date: new Date().toISOString().split('T')[0]
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
+      medicationTaken: false,
+      mood: ''
     });
   };
 
@@ -82,6 +88,39 @@ function HealthLog() {
             required
           />
         </div>
+        <div className="mb-4">
+          <label className="block text-secondary mb-2">時間</label>
+          <input
+            type="time"
+            name="time"
+            value={formData.time}
+            onChange={handleChange}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+        </div>
+        <div className="mb-4 flex items-center">
+          <input
+            type="checkbox"
+            name="medicationTaken"
+            checked={formData.medicationTaken}
+            onChange={handleChange}
+            id="medTaken"
+            className="mr-2"
+          />
+          <label htmlFor="medTaken" className="text-secondary">今天已服用藥物</label>
+        </div>
+        <div className="mb-4">
+          <label className="block text-secondary mb-2">心情日記</label>
+          <textarea
+            name="mood"
+            value={formData.mood}
+            onChange={handleChange}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+            rows="3"
+            placeholder="記錄你的心情或備註"
+          />
+        </div>
         <button
           type="submit"
           className="w-full bg-primary text-white p-2 rounded hover:bg-blue-700 transition"
@@ -99,19 +138,17 @@ function HealthLog() {
             {logs.map((log) => (
               <li
                 key={log.id}
-                className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
+                className="bg-white p-4 rounded-lg shadow-md"
               >
-                <div>
+                <div className="mb-2">
+                  <p className="text-secondary">日期：{log.date} {log.time}</p>
+                  <p className="text-secondary">血壓：{log.bloodPressure} mmHg</p>
+                  <p className="text-secondary">體重：{log.weight} kg</p>
                   <p className="text-secondary">
-                    日期：{log.date}
-                  </p>
-                  <p className="text-secondary">
-                    血壓：{log.bloodPressure} mmHg
-                  </p>
-                  <p className="text-secondary">
-                    體重：{log.weight} kg
+                    藥物：{log.medicationTaken ? '已服用' : '未服用'}
                   </p>
                 </div>
+                <div className="mb-2 text-secondary">心情：{log.mood}</div>
                 <button
                   onClick={() => handleDelete(log.id)}
                   className="text-red-500 hover:text-red-700"
