@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/health-info-frontend-new/static/css/main.1a4425c8.css",
-    "main.js": "/health-info-frontend-new/static/js/main.b00ebb07.js",
+    "main.js": "/health-info-frontend-new/static/js/main.84f8339b.js",
     "static/js/453.419a5d54.chunk.js": "/health-info-frontend-new/static/js/453.419a5d54.chunk.js",
     "index.html": "/health-info-frontend-new/index.html",
     "main.1a4425c8.css.map": "/health-info-frontend-new/static/css/main.1a4425c8.css.map",
-    "main.b00ebb07.js.map": "/health-info-frontend-new/static/js/main.b00ebb07.js.map",
+    "main.84f8339b.js.map": "/health-info-frontend-new/static/js/main.84f8339b.js.map",
     "453.419a5d54.chunk.js.map": "/health-info-frontend-new/static/js/453.419a5d54.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1a4425c8.css",
-    "static/js/main.b00ebb07.js"
+    "static/js/main.84f8339b.js"
   ]
 }
