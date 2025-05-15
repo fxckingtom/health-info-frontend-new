@@ -1,4 +1,3 @@
-// src/App.js
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import DiseaseList from './components/DiseaseList';
 import HealthInfo   from './components/HealthInfo';
@@ -8,7 +7,7 @@ import HealthyRecipes from './HealthyRecipes';
 
 function App() {
   return (
-    <Router basename="/health-info-frontend-new">
+    <Router>
       <Navbar />
       <Routes>
         <Route path="/"            element={<DiseaseList />} />
