@@ -12,7 +12,7 @@ function HealthLog() {
     mood: ''
   });
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+  const API_URL = process.env.REACT_APP_API_URL || 'https://health-info-backend-new.onrender.com';
 
   // 1) 讀取後端日誌
   useEffect(() => {
