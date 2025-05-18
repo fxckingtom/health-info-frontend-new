@@ -6,7 +6,7 @@ function Chatbot() {
   const [messages, setMessages] = useState([{ text: '你好！我可以幫你解答醫療問題或介紹網站功能！', sender: 'bot' }]);
   const [input, setInput] = useState('');
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+  const API_URL = process.env.REACT_APP_API_URL || 'https://health-info-backend-new.onrender.com';
   console.log('Chatbot API URL:', API_URL); // 添加日誌
 
   const handleSend = async () => {
