@@ -2,6 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <script>
+   (function() {
+     // 当前 URL path 部分
+     var path = window.location.pathname;
+    // 你的 GitHub Pages 仓库
+     var base = '/health-info-frontend-new';
+     // 保留原来的 hash（如果有的话）
+     var hash = window.location.hash;
+     // 组出 /health-info-frontend-new/#/…
+     var target = base + '/#' + (path.replace(base, '') || '/') + hash;
+     // 直接跳转
+     window.location.replace(target);
+   })();
+ </script>
   <link rel="icon" href="/health-info-frontend-new/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
