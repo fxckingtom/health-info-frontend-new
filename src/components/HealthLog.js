@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function HealthLog() {
   const [logs, setLogs] = useState([]);
@@ -11,41 +12,58 @@ function HealthLog() {
     mood: ''
   });
 
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+  // 1) 讀取後端日誌
   useEffect(() => {
-    const savedLogs = localStorage.getItem('healthLogs');
-    if (savedLogs) {
-      setLogs(JSON.parse(savedLogs));
+    async function fetchLogs() {
+      try {
+        const res = await axios.get(`${API_URL}/api/health-log`);
+        setLogs(res.data);
+      } catch (err) {
+        console.error('Error fetching health logs:', err);
+      }
     }
+    fetchLogs();
   }, []);
 
+  // 表單變更
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: type === 'checkbox' ? checked : value
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newLog = { ...formData, id: Date.now() };
-    const updatedLogs = [newLog, ...logs];
-    setLogs(updatedLogs);
-    localStorage.setItem('healthLogs', JSON.stringify(updatedLogs));
-    setFormData({
-      bloodPressure: '',
-      weight: '',
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
-      medicationTaken: false,
-      mood: ''
-    });
+    try {
+      const res = await axios.post(`${API_URL}/api/health-log`, formData);
+      // 預置：最新的一筆放在最前面
+      setLogs([res.data, ...logs]);
+      // 重設表單
+      setFormData({
+        bloodPressure: '',
+        weight: '',
+        date: new Date().toISOString().split('T')[0],
+        time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
+        medicationTaken: false,
+        mood: ''
+      });
+    } catch (err) {
+      console.error('Error saving health log:', err);
+    }
   };
 
-  const handleDelete = (id) => {
-    const updatedLogs = logs.filter((log) => log.id !== id);
-    setLogs(updatedLogs);
-    localStorage.setItem('healthLogs', JSON.stringify(updatedLogs));
+  // 3) 刪除（如果你也開了 DELETE endpoint）
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/api/health-log/${id}`);
+      setLogs(logs.filter(log => log._id !== id));
+    } catch (err) {
+      console.error('Error deleting health log:', err);
+    }
   };
 
   return (
