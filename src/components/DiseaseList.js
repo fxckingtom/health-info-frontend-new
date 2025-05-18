@@ -20,7 +20,7 @@ function DiseaseList() {
 
   useEffect(() => {
     const API_URL = process.env.REACT_APP_API_URL || 'https://health-info-backend-new.onrender.com';
-    const response = await axios.get(`${API_URL}/api/health-info`);
+    axios.get(`${API_URL}/api/health-info`)
       .then((response) => {
         console.log('DiseaseList API 響應:', response.data);
         const mainDiseases = response.data.filter((disease) =>
