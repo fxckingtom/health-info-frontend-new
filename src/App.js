@@ -7,7 +7,7 @@ import HealthyRecipes from './HealthyRecipes';
 
 function App() {
   return (
-    <Router basename="/health-info-frontend-new">
+    <Router basename="https://fxckingtom.github.io/health-info-frontend-new/">
       <Navbar />
       <Routes>
         <Route path="/"            element={<DiseaseList />} />
