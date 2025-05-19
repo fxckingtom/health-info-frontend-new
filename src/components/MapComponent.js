@@ -53,7 +53,7 @@ const MapComponent = () => {
 
   return (
     <LoadScript
-      googleMapsApiKey="你的 API 金鑰"
+      googleMapsApiKey="AIzaSyBTlqHAPuKk7ImTi739UXII-eFTIgMPGtg"
       libraries={['places']} // 載入 Places 函式庫
     >
       <GoogleMap
