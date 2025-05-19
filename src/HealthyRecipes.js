@@ -13,7 +13,6 @@ const HealthyRecipes = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/healthy-recipes`
         );
-        // 兼容不同回傳結構：{ data: [...] } 或直接回傳陣列
         const list = response.data.data ?? response.data;
         console.log('Fetched recipes:', list);
         setRecipes(list);
@@ -67,7 +66,7 @@ const HealthyRecipes = () => {
           type="text"
           value={foodFilter}
           onChange={handleFilterChange}
-          placeholder="輸入食物名稱（如 Spinach）"
+          placeholder="輸入食物名稱（如 牛肉、高麗菜）"
           className="p-2 border rounded"
         />
       </div>
@@ -104,13 +103,14 @@ const HealthyRecipes = () => {
                 ? recipe.ingredients.map((ing, i) => <li key={i}>{ing}</li>)
                 : <li className="text-gray-400">尚未提供食材</li>}
             </ul>
+
             <p className="text-gray-700 mb-1">
               <strong>步驟：</strong>
             </p>
             <ol className="list-decimal list-inside mb-2">
               {Array.isArray(recipe.steps)
                 ? recipe.steps.map((step, i) => <li key={i}>{step}</li>)
-              : <li className="text-gray-400">尚未提供步驟</li>}
+                : <li className="text-gray-400">尚未提供步驟</li>}
             </ol>
           </motion.div>
         ))}
