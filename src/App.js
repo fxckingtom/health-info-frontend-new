@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import DiseaseList from './components/DiseaseList';
 import HealthInfo   from './components/HealthInfo';
 import HealthLog    from './components/HealthLog';
