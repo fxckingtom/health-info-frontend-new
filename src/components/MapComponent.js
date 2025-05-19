@@ -53,9 +53,12 @@ const MapComponent = () => {
   }, []);
 
   return (
+  <div>
+    <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫院地圖</h2>
+
     <LoadScript
       googleMapsApiKey="AIzaSyBTlqHAPuKk7ImTi739UXII-eFTIgMPGtg"
-      libraries={['places']} // 載入 Places 函式庫
+      libraries={['places']}
     >
       <GoogleMap
         mapContainerStyle={mapStyles}
@@ -63,10 +66,7 @@ const MapComponent = () => {
         zoom={14}
         onLoad={onMapLoad}
       >
-        {/* 顯示使用者目前位置的標記 */}
         <Marker position={currentPosition} label="你的位置" />
-
-        {/* 顯示附近醫院的標記 */}
         {hospitalLocations.map((hospital, index) => (
           <Marker
             key={index}
@@ -76,7 +76,7 @@ const MapComponent = () => {
         ))}
       </GoogleMap>
     </LoadScript>
-  );
-};
+  </div>
+);
 
 export default MapComponent;
