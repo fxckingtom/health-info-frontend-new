@@ -100,18 +100,17 @@ const HealthyRecipes = () => {
               <strong>食材：</strong>
             </p>
             <ul className="list-disc list-inside mb-2">
-              {(recipe.ingredients ?? []).map((ing, i) => (
-                <li key={i}>{ing}</li>
-              ))}
+              {Array.isArray(recipe.ingredients)
+                ? recipe.ingredients.map((ing, i) => <li key={i}>{ing}</li>)
+                : <li className="text-gray-400">尚未提供食材</li>}
             </ul>
-
             <p className="text-gray-700 mb-1">
               <strong>步驟：</strong>
             </p>
             <ol className="list-decimal list-inside mb-2">
-              {(recipe.steps ?? []).map((step, i) => (
-                <li key={i}>{step}</li>
-              ))}
+              {Array.isArray(recipe.steps)
+                ? recipe.steps.map((step, i) => <li key={i}>{step}</li>)
+              : <li className="text-gray-400">尚未提供步驟</li>}
             </ol>
           </motion.div>
         ))}
