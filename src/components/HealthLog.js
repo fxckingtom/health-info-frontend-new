@@ -18,10 +18,10 @@ function HealthLog() {
   useEffect(() => {
     async function fetchLogs() {
       try {
-        axios.get(`${API_URL}/api/health-log`)
+        const res = await axios.get(`${API_URL}/api/health-log`);
         setLogs(res.data);
       } catch (err) {
-        console.error('Error fetching health logs:', err);
+        console.error('取得資料錯誤', err);
       }
     }
     fetchLogs();
