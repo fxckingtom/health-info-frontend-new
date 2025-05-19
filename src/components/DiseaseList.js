@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import ChatBot from './Chatbot';
+import { Link } from 'react-router-dom'; // 加這行，才能使用 <Link>
 
 function DiseaseList() {
   const [diseases, setDiseases] = useState([]);
@@ -123,6 +124,13 @@ function DiseaseList() {
         >
           刷新
         </button>
+      </div>
+      <div className="mt-8 text-center">
+        <Link to="/hospital-map">
+          <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            前往附近醫院地圖
+          </button>
+        </Link>
       </div>
 
       <ChatBot />
