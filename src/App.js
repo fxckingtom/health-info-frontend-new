@@ -15,7 +15,7 @@ function App() {
         <Route path="/health-info" element={<HealthInfo   />} />
         <Route path="/health-log"  element={<HealthLog    />} />
         <Route path="/healthy-recipes" element={<HealthyRecipes />} />
-        <Route path="/hospital-map"   element={<MapComponent />} /> 
+        <Route path="/hospital-map" element={<MapComponent />} />
       </Routes>
     </Router>
   );
