@@ -13,8 +13,10 @@ const HealthyRecipes = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/healthy-recipes`
         );
-        // 如果後端回傳 { data: [...] }，請改成 response.data.data
-        setRecipes(response.data);
+        // 兼容不同回傳結構：{ data: [...] } 或直接回傳陣列
+        const list = response.data.data ?? response.data;
+        console.log('Fetched recipes:', list);
+        setRecipes(list);
       } catch (error) {
         console.error('Error fetching recipes:', error);
       } finally {
@@ -28,17 +30,19 @@ const HealthyRecipes = () => {
     const food = e.target.value;
     setFoodFilter(food);
     try {
+      let response;
       if (food) {
-        const response = await axios.get(
+        response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/healthy-recipes-by-food?food=${food}`
         );
-        setRecipes(response.data);
       } else {
-        const response = await axios.get(
+        response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/healthy-recipes`
         );
-        setRecipes(response.data);
       }
+      const list = response.data.data ?? response.data;
+      console.log('Filtered recipes:', list);
+      setRecipes(list);
     } catch (error) {
       console.error('Error filtering recipes:', error);
     }
