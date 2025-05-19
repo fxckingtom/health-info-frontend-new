@@ -155,7 +155,7 @@ function HealthLog() {
           <ul className="space-y-4">
             {logs.map((log) => (
               <li
-                key={log.id}
+                key={log._id}
                 className="bg-white p-4 rounded-lg shadow-md"
               >
                 <div className="mb-2">
@@ -168,7 +168,7 @@ function HealthLog() {
                 </div>
                 <div className="mb-2 text-secondary">心情：{log.mood}</div>
                 <button
-                  onClick={() => handleDelete(log.id)}
+                  onClick={() => handleDelete(log._id)}
                   className="text-red-500 hover:text-red-700"
                 >
                   刪除
