@@ -8,7 +8,7 @@ import MapComponent from './components/MapComponent';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/health-info-frontend-new">
       <Navbar />
       <Routes>
         <Route path="/"            element={<DiseaseList />} />
