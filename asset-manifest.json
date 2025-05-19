@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/health-info-frontend-new/static/css/main.c27add80.css",
-    "main.js": "/health-info-frontend-new/static/js/main.6da33691.js",
+    "main.css": "/health-info-frontend-new/static/css/main.8f41b5f5.css",
+    "main.js": "/health-info-frontend-new/static/js/main.f23ae98a.js",
     "static/js/453.419a5d54.chunk.js": "/health-info-frontend-new/static/js/453.419a5d54.chunk.js",
     "index.html": "/health-info-frontend-new/index.html",
-    "main.c27add80.css.map": "/health-info-frontend-new/static/css/main.c27add80.css.map",
-    "main.6da33691.js.map": "/health-info-frontend-new/static/js/main.6da33691.js.map",
+    "main.8f41b5f5.css.map": "/health-info-frontend-new/static/css/main.8f41b5f5.css.map",
+    "main.f23ae98a.js.map": "/health-info-frontend-new/static/js/main.f23ae98a.js.map",
     "453.419a5d54.chunk.js.map": "/health-info-frontend-new/static/js/453.419a5d54.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c27add80.css",
-    "static/js/main.6da33691.js"
+    "static/css/main.8f41b5f5.css",
+    "static/js/main.f23ae98a.js"
   ]
 }
