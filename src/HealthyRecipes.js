@@ -10,11 +10,14 @@ const HealthyRecipes = () => {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/healthy-recipes`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/healthy-recipes`
+        );
+        // 如果後端回傳 { data: [...] }，請改成 response.data.data
         setRecipes(response.data);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching recipes:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -24,16 +27,20 @@ const HealthyRecipes = () => {
   const handleFilterChange = async (e) => {
     const food = e.target.value;
     setFoodFilter(food);
-    if (food) {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/healthy-recipes-by-food?food=${food}`);
+    try {
+      if (food) {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/healthy-recipes-by-food?food=${food}`
+        );
         setRecipes(response.data);
-      } catch (error) {
-        console.error('Error filtering recipes:', error);
+      } else {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/healthy-recipes`
+        );
+        setRecipes(response.data);
       }
-    } else {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/healthy-recipes`);
-      setRecipes(response.data);
+    } catch (error) {
+      console.error('Error filtering recipes:', error);
     }
   };
 
@@ -63,38 +70,45 @@ const HealthyRecipes = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {recipes.map((recipe, index) => (
           <motion.div
-            key={index}
+            key={recipe._id || index}
             className="bg-white rounded-lg shadow-lg p-6"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
-            <h2 className="text-2xl font-semibold text-blue-500 mb-2">{recipe.name}</h2>
-            <p className="text-gray-700 mb-2">
-              <strong>主要食材：</strong> {recipe.food}
+            <h2 className="text-2xl font-semibold text-blue-500 mb-2">
+              {recipe.name}
+            </h2>
+            <p className="text-gray-700 mb-1">
+              <strong>分類：</strong> {recipe.category}
+            </p>
+            <p className="text-gray-700 mb-1">
+              <strong>烹調時間：</strong> {recipe.cooking_time}
+            </p>
+            <p className="text-gray-700 mb-1">
+              <strong>難易度：</strong> {recipe.difficulty}
             </p>
             <p className="text-gray-700 mb-2">
-              <strong>適合疾病：</strong> {recipe.suitable_diseases.join(', ')}
+              <strong>份量：</strong> {recipe.servings} 人份
             </p>
-            <p className="text-gray-700 mb-2">
+
+            <p className="text-gray-700 mb-1">
               <strong>食材：</strong>
             </p>
             <ul className="list-disc list-inside mb-2">
-              {recipe.ingredients.map((ingredient, i) => (
-                <li key={i}>{ingredient}</li>
+              {(recipe.ingredients ?? []).map((ing, i) => (
+                <li key={i}>{ing}</li>
               ))}
             </ul>
-            <p className="text-gray-700 mb-2">
+
+            <p className="text-gray-700 mb-1">
               <strong>步驟：</strong>
             </p>
             <ol className="list-decimal list-inside mb-2">
-              {recipe.steps.map((step, i) => (
+              {(recipe.steps ?? []).map((step, i) => (
                 <li key={i}>{step}</li>
               ))}
             </ol>
-            <p className="text-gray-700">
-              <strong>為何適合：</strong> {recipe.explanation}
-            </p>
           </motion.div>
         ))}
       </div>
