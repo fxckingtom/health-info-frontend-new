@@ -10,9 +10,10 @@ const MapComponent = () => {
 
   // 地圖樣式
   const mapStyles = {
-    height: '500px',
+    height: '80vh', // 改為視窗高度 80%
     width: '100%',
   };
+
 
   // 地圖載入完成後的回呼函式
   const onMapLoad = (map) => {
