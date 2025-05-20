@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([{ text: '你好！我在測試前端是否被更改', sender: 'bot' }]);
+  const [messages, setMessages] = useState([{ text: '你好！我可以幫你解答醫療問題或介紹網站功能！', sender: 'bot' }]);
   const [input, setInput] = useState('');
 
   const API_URL = process.env.REACT_APP_API_URL || 'https://health-info-backend-new.onrender.com';
