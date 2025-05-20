@@ -11,7 +11,7 @@ function App() {
     <Router basename="/health-info-frontend-new">
       <Navbar />
       <Routes>
-
+        <Route path="/"            element={<DiseaseList />} />
         <Route path="/health-info" element={<HealthInfo   />} />
         <Route path="/health-log"  element={<HealthLog    />} />
         <Route path="/healthy-recipes" element={<HealthyRecipes />} />
