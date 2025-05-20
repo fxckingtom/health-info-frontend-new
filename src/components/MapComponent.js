@@ -78,5 +78,5 @@ const MapComponent = () => {
     </LoadScript>
   </div>
 );
-
+}
 export default MapComponent;
