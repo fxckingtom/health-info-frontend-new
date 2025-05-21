@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import ChatBot from './Chatbot';
-import { Link } from 'react-router-dom'; // 加這行，才能使用 <Link>
 
 function DiseaseList() {
   const [diseases, setDiseases] = useState([]);
