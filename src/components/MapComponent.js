@@ -28,9 +28,13 @@ const MapComponent = () => {
           // ✅ 查詢醫院 + 診所
           const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
           const radius = 5000;
-          const url = `https://api.geoapify.com/v2/places?categories=healthcare.hospital,healthcare.clinic&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&limit=30&apiKey=${apiKey}`;
+          const url = `https://api.geoapify.com/v2/places?categories=healthcare.hospital,healthcare.clinic&filter=circle:${lon},${lat},${radius}&limit=30&apiKey=${apiKey}`;
 
           try {
+            if (!data.features) {
+              console.error('API 回傳錯誤，內容如下:', data);
+            return;
+            }
             const response = await fetch(url);
             const data = await response.json();
             const results = data.features.map((place) => ({
