@@ -24,6 +24,41 @@ const MapUpdater = ({ center }) => {
   return null;
 };
 
+const categoryTranslations = {
+  "healthcare": "醫療機構",
+  
+  // 一般診所與專科診所
+  "healthcare.clinic_or_praxis": "診所",
+  "healthcare.clinic_or_praxis.allergology": "過敏科診所",
+  "healthcare.clinic_or_praxis.vascular_surgery": "血管外科診所",
+  "healthcare.clinic_or_praxis.urology": "泌尿科診所",
+  "healthcare.clinic_or_praxis.trauma": "創傷醫學診所",
+  "healthcare.clinic_or_praxis.rheumatology": "風濕免疫科診所",
+  "healthcare.clinic_or_praxis.radiology": "放射科診所",
+  "healthcare.clinic_or_praxis.pulmonology": "胸腔科診所",
+  "healthcare.clinic_or_praxis.psychiatry": "精神科診所",
+  "healthcare.clinic_or_praxis.paediatrics": "小兒科診所",
+  "healthcare.clinic_or_praxis.otolaryngology": "耳鼻喉科診所",
+  "healthcare.clinic_or_praxis.orthopaedics": "骨科診所",
+  "healthcare.clinic_or_praxis.ophthalmology": "眼科診所",
+  "healthcare.clinic_or_praxis.occupational": "職業醫學診所",
+  "healthcare.clinic_or_praxis.gynaecology": "婦產科診所",
+  "healthcare.clinic_or_praxis.general": "一般科診所",
+  "healthcare.clinic_or_praxis.gastroenterology": "胃腸科診所",
+  "healthcare.clinic_or_praxis.endocrinology": "內分泌科診所",
+  "healthcare.clinic_or_praxis.dermatology": "皮膚科診所",
+  "healthcare.clinic_or_praxis.cardiology": "心臟科診所",
+
+  // 牙科
+  "healthcare.dentist": "牙醫診所",
+  "healthcare.dentist.orthodontics": "牙齒矯正診所",
+
+  // 醫院與藥局
+  "healthcare.hospital": "醫院",
+  "healthcare.pharmacy": "藥局"
+};
+
+
 const MapComponent = () => {
   const [currentPosition, setCurrentPosition] = useState([23.973875, 120.982024]); // 台灣中心
   const [places, setPlaces] = useState([]);
@@ -50,11 +85,15 @@ const MapComponent = () => {
               return;
             }
 
-            const results = data.features.map((place) => ({
-              name: place.properties.name || '無名稱機構',
-              type: place.properties.categories?.[0] || '未知類型',
-              position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-            }));
+            const results = data.features.map((place) => {
+              const rawCategory = place.properties.categories?.[0] || '未知機構';
+              const translatedCategory = categoryTranslations[rawCategory] || rawCategory; // 如果沒有翻譯就顯示原文
+              return {
+                name: place.properties.name || '無名稱機構',
+                type: translatedCategory,
+                position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+              };
+            });
             setPlaces(results);
           } catch (err) {
             console.error('搜尋失敗:', err);
