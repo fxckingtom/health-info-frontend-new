@@ -25,18 +25,20 @@ const MapComponent = () => {
           const lon = pos.coords.longitude;
           setCurrentPosition([lat, lon]);
 
-          // ✅ 查詢醫院 + 診所
+          // ✅ 查詢醫院 + 診所（移除 bias 參數）
           const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
           const radius = 5000;
           const url = `https://api.geoapify.com/v2/places?categories=healthcare.hospital,healthcare.clinic&filter=circle:${lon},${lat},${radius}&limit=30&apiKey=${apiKey}`;
 
           try {
-            if (!data.features) {
-              console.error('API 回傳錯誤，內容如下:', data);
-            return;
-            }
             const response = await fetch(url);
             const data = await response.json();
+
+            if (!data.features) {
+              console.error('API 回傳錯誤，內容如下:', data);
+              return;
+            }
+
             const results = data.features.map((place) => ({
               name: place.properties.name || '無名稱機構',
               type: place.properties.categories?.[0] || '未知類型',
