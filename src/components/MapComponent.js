@@ -13,18 +13,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
 });
 
-// 地圖中心點更新元件
-const MapUpdater = ({ center }) => {
-  const map = useMap();
-
-  useEffect(() => {
-    map.setView(center);
-  }, [center, map]);
-
-  return null;
-};
-
-// 類別翻譯對照表
+// 類別翻譯對照表（✅移到元件外層，宣告一次即可）
 const categoryTranslations = {
   "healthcare": "醫療機構",
   "healthcare.clinic_or_praxis": "診所",
@@ -53,8 +42,18 @@ const categoryTranslations = {
   "healthcare.pharmacy": "藥局"
 };
 
+const MapUpdater = ({ center }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setView(center);
+  }, [center, map]);
+
+  return null;
+};
+
 const MapComponent = () => {
-  const [currentPosition, setCurrentPosition] = useState([23.973875, 120.982024]); // 台灣中心
+  const [currentPosition, setCurrentPosition] = useState([23.973875, 120.982024]);
   const [places, setPlaces] = useState([]);
 
   useEffect(() => {
@@ -103,18 +102,15 @@ const MapComponent = () => {
   return (
     <div>
       <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫療機構地圖</h2>
-
       <MapContainer center={currentPosition} zoom={13} style={{ height: '80vh', width: '100%' }}>
         <MapUpdater center={currentPosition} />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
-
         <Marker position={currentPosition}>
           <Popup>你的位置</Popup>
         </Marker>
-
         {places.map((place, index) => (
           <Marker key={index} position={place.position}>
             <Popup>
