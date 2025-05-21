@@ -1,105 +1,79 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+// MapComponent.js
+
+import React, { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// 修正 marker 圖示在 React 中失效的問題
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+});
 
 const MapComponent = () => {
-  const [currentPosition, setCurrentPosition] = useState({ lat: 23.973875, lng: 120.982024 });
-  const [hospitalLocations, setHospitalLocations] = useState([]);
-  const [locationError, setLocationError] = useState(false);
-  const mapRef = useRef(null);
+  // 使用者位置
+  const [currentPosition, setCurrentPosition] = useState([23.973875, 120.982024]);
+  const [hospitals, setHospitals] = useState([]);
 
-  const mapStyles = {
-    height: '80vh',
-    width: '100%',
-  };
-
-  // ✅ 地圖載入後建立 PlacesService 並搜尋醫院
-  const onMapLoad = (map) => {
-    mapRef.current = map;
-
-    const service = new window.google.maps.places.PlacesService(map);
-
-    const request = {
-      location: currentPosition,
-      radius: 5000,
-      type: ['hospital'],
-    };
-
-    service.nearbySearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        setHospitalLocations(results);
-      } else {
-        console.error('無法載入附近醫院:', status);
-      }
-    });
-
-    // ✅ 顯示使用者位置（使用舊版 Marker）
-    new window.google.maps.Marker({
-      map: map,
-      position: currentPosition,
-      title: '你的位置',
-      icon: {
-        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-      },
-    });
-  };
-
-  // ✅ 顯示醫院標記
-  useEffect(() => {
-    if (!mapRef.current || hospitalLocations.length === 0) return;
-
-    hospitalLocations.forEach((hospital) => {
-      new window.google.maps.Marker({
-        map: mapRef.current,
-        position: hospital.geometry.location,
-        title: hospital.name,
-      });
-    });
-  }, [hospitalLocations]);
-
-  // ✅ 嘗試取得使用者位置
+  // 取得使用者位置
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCurrentPosition({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          setLocationError(false);
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          setCurrentPosition([lat, lon]);
+
+          // 呼叫 Geoapify API 搜尋附近醫院
+          const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
+          const radius = 5000; // 半徑5公里
+          const url = `https://api.geoapify.com/v2/places?categories=healthcare.hospital&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&limit=20&apiKey=${apiKey}`;
+
+          try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const results = data.features.map((place) => ({
+              name: place.properties.name || '無名稱醫院',
+              position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+            }));
+            setHospitals(results);
+          } catch (err) {
+            console.error('搜尋醫院失敗:', err);
+          }
         },
-        (error) => {
-          console.error('無法取得使用者位置:', error.message);
-          setLocationError(true);
+        (err) => {
+          console.error('定位失敗，使用預設位置:', err.message);
         }
       );
-    } else {
-      console.error('瀏覽器不支援地理定位，使用預設位置。');
-      setLocationError(true);
     }
   }, []);
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫院地圖</h2>
-      {locationError && (
-        <p style={{ textAlign: 'center', color: 'red' }}>
-          無法獲取您的位置，已使用預設位置。
-        </p>
-      )}
+      <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫院地圖（免費搜尋）</h2>
 
-      <LoadScript
-        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        libraries={['places']} // 必須保留才能用 PlacesService
-      >
-        <GoogleMap
-          mapContainerStyle={mapStyles}
-          center={currentPosition}
-          zoom={14}
-          onLoad={onMapLoad}
-        >
-          {/* 標記都在 useEffect 和 onMapLoad 中加入 */}
-        </GoogleMap>
-      </LoadScript>
+      <MapContainer center={currentPosition} zoom={13} style={{ height: '80vh', width: '100%' }}>
+        {/* 地圖底圖 */}
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        />
+
+        {/* 使用者位置 */}
+        <Marker position={currentPosition}>
+          <Popup>你的位置</Popup>
+        </Marker>
+
+        {/* 醫院位置 */}
+        {hospitals.map((h, i) => (
+          <Marker key={i} position={h.position}>
+            <Popup>{h.name}</Popup>
+          </Marker>
+        ))}
+      </MapContainer>
     </div>
   );
 };
