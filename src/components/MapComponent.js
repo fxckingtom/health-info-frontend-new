@@ -15,7 +15,6 @@ L.Icon.Default.mergeOptions({
 
 // 類別翻譯對照表（✅移到元件外層，宣告一次即可）
 const categoryTranslations = {
-  "healthcare": "醫療機構",
   "healthcare.clinic_or_praxis": "診所",
   "healthcare.clinic_or_praxis.allergology": "過敏科診所",
   "healthcare.clinic_or_praxis.vascular_surgery": "血管外科診所",
@@ -32,14 +31,9 @@ const categoryTranslations = {
   "healthcare.clinic_or_praxis.occupational": "職業醫學診所",
   "healthcare.clinic_or_praxis.gynaecology": "婦產科診所",
   "healthcare.clinic_or_praxis.general": "一般科診所",
-  "healthcare.clinic_or_praxis.gastroenterology": "胃腸科診所",
-  "healthcare.clinic_or_praxis.endocrinology": "內分泌科診所",
-  "healthcare.clinic_or_praxis.dermatology": "皮膚科診所",
-  "healthcare.clinic_or_praxis.cardiology": "心臟科診所",
   "healthcare.dentist": "牙醫診所",
   "healthcare.dentist.orthodontics": "牙齒矯正診所",
-  "healthcare.hospital": "醫院",
-  "healthcare.pharmacy": "藥局"
+  "building": "藥局"
 };
 
 const MapUpdater = ({ center }) => {
