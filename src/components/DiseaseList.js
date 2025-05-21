@@ -125,14 +125,6 @@ function DiseaseList() {
         </button>
       </div>
 
-      <div className="mt-8 text-center">
-        <Link to="/hospital-map">
-          <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            前往附近醫院地圖
-          </button>
-        </Link>
-      </div>
-
       <ChatBot />
     </div>
   );
