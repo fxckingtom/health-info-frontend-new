@@ -10,7 +10,7 @@ function Navbar() {
           <Link to="/health-info" className="hover:underline">健康資訊</Link>
           <Link to="/health-log" className="hover:underline">健康日誌</Link>
           <Link to="/healthy-recipes" className="hover:underline">健康食譜</Link>
-          <Link to="/hospital-map">附近醫院</Link>
+          <Link to="/hospital-map">醫院</Link>
         </div>
       </div>
     </nav>
