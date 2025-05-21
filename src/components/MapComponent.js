@@ -1,10 +1,9 @@
 // MapComponent.js
 
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useMap } from 'react-leaflet';
 
 // 修正 marker 圖示在 React 中失效的問題
 delete L.Icon.Default.prototype._getIconUrl;
@@ -14,20 +13,20 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
 });
 
+// 地圖中心點更新元件
 const MapUpdater = ({ center }) => {
   const map = useMap();
 
   useEffect(() => {
-    map.setView(center); // 更新地圖中心點
+    map.setView(center);
   }, [center, map]);
 
   return null;
 };
 
+// 類別翻譯對照表
 const categoryTranslations = {
   "healthcare": "醫療機構",
-  
-  // 一般診所與專科診所
   "healthcare.clinic_or_praxis": "診所",
   "healthcare.clinic_or_praxis.allergology": "過敏科診所",
   "healthcare.clinic_or_praxis.vascular_surgery": "血管外科診所",
@@ -48,16 +47,11 @@ const categoryTranslations = {
   "healthcare.clinic_or_praxis.endocrinology": "內分泌科診所",
   "healthcare.clinic_or_praxis.dermatology": "皮膚科診所",
   "healthcare.clinic_or_praxis.cardiology": "心臟科診所",
-
-  // 牙科
   "healthcare.dentist": "牙醫診所",
   "healthcare.dentist.orthodontics": "牙齒矯正診所",
-
-  // 醫院與藥局
   "healthcare.hospital": "醫院",
   "healthcare.pharmacy": "藥局"
 };
-
 
 const MapComponent = () => {
   const [currentPosition, setCurrentPosition] = useState([23.973875, 120.982024]); // 台灣中心
@@ -71,7 +65,6 @@ const MapComponent = () => {
           const lon = pos.coords.longitude;
           setCurrentPosition([lat, lon]);
 
-          // ✅ 查詢醫院 + 診所（移除 bias 參數）
           const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
           const radius = 5000;
           const url = `https://api.geoapify.com/v2/places?categories=healthcare&filter=circle:${lon},${lat},${radius}&limit=30&apiKey=${apiKey}`;
@@ -87,13 +80,14 @@ const MapComponent = () => {
 
             const results = data.features.map((place) => {
               const rawCategory = place.properties.categories?.[0] || '未知機構';
-              const translatedCategory = categoryTranslations[rawCategory] || rawCategory; // 如果沒有翻譯就顯示原文
+              const translatedCategory = categoryTranslations[rawCategory] || rawCategory;
               return {
                 name: place.properties.name || '無名稱機構',
                 type: translatedCategory,
                 position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
               };
             });
+
             setPlaces(results);
           } catch (err) {
             console.error('搜尋失敗:', err);
@@ -111,18 +105,16 @@ const MapComponent = () => {
       <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫療機構地圖</h2>
 
       <MapContainer center={currentPosition} zoom={13} style={{ height: '80vh', width: '100%' }}>
-        <MapUpdater center={currentPosition}
+        <MapUpdater center={currentPosition} />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
 
-        {/* 使用者位置 */}
         <Marker position={currentPosition}>
           <Popup>你的位置</Popup>
         </Marker>
 
-        {/* 顯示醫院與診所 */}
         {places.map((place, index) => (
           <Marker key={index} position={place.position}>
             <Popup>
