@@ -2,61 +2,53 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 const MapComponent = () => {
-  // 使用者位置（預設為台灣中心）
   const [currentPosition, setCurrentPosition] = useState({ lat: 23.973875, lng: 120.982024 });
-
-  // 醫院位置列表
   const [hospitalLocations, setHospitalLocations] = useState([]);
-
-  // 是否出現定位錯誤
   const [locationError, setLocationError] = useState(false);
-
-  // 保存地圖參考物件
   const mapRef = useRef(null);
 
-  // 地圖樣式
   const mapStyles = {
     height: '80vh',
     width: '100%',
   };
 
-  // ✅ 地圖載入完成後執行的函式
+  // ✅ 地圖載入後建立 PlacesService 並搜尋醫院
   const onMapLoad = (map) => {
     mapRef.current = map;
 
-    // 📍 建立 PlacesService 物件
     const service = new window.google.maps.places.PlacesService(map);
 
     const request = {
       location: currentPosition,
-      radius: 5000, // 搜尋半徑 5 公里
-      type: ['hospital'], // 搜尋醫院
+      radius: 5000,
+      type: ['hospital'],
     };
 
-    // 🔍 搜尋附近的醫院
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        setHospitalLocations(results); // 儲存搜尋結果
+        setHospitalLocations(results);
       } else {
         console.error('無法載入附近醫院:', status);
       }
     });
 
-    // 📍 顯示使用者當前位置（使用 AdvancedMarkerElement）
-    const userMarker = new window.google.maps.marker.AdvancedMarkerElement({
+    // ✅ 顯示使用者位置（使用舊版 Marker）
+    new window.google.maps.Marker({
       map: map,
       position: currentPosition,
       title: '你的位置',
+      icon: {
+        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+      },
     });
   };
 
-  // 🔄 每次 hospitalLocations 有變化時，加入醫院標記
+  // ✅ 顯示醫院標記
   useEffect(() => {
     if (!mapRef.current || hospitalLocations.length === 0) return;
 
-    // 每個醫院都加上標記
     hospitalLocations.forEach((hospital) => {
-      new window.google.maps.marker.AdvancedMarkerElement({
+      new window.google.maps.Marker({
         map: mapRef.current,
         position: hospital.geometry.location,
         title: hospital.name,
@@ -95,10 +87,9 @@ const MapComponent = () => {
         </p>
       )}
 
-      {/* ✅ 注意：libraries 要寫成固定陣列避免效能警告 */}
       <LoadScript
         googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        libraries={['places']} // 這裡固定寫死，不要每次都重建新陣列
+        libraries={['places']} // 必須保留才能用 PlacesService
       >
         <GoogleMap
           mapContainerStyle={mapStyles}
@@ -106,7 +97,7 @@ const MapComponent = () => {
           zoom={14}
           onLoad={onMapLoad}
         >
-          {/* 所有標記都會在 onMapLoad 及 useEffect 中用 AdvancedMarkerElement 加入 */}
+          {/* 標記都在 useEffect 和 onMapLoad 中加入 */}
         </GoogleMap>
       </LoadScript>
     </div>
