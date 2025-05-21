@@ -53,7 +53,7 @@ const MapComponent = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫院地圖（免費搜尋）</h2>
+      <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫院地圖</h2>
 
       <MapContainer center={currentPosition} zoom={13} style={{ height: '80vh', width: '100%' }}>
         {/* 地圖底圖 */}
