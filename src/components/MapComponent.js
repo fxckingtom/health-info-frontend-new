@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useMap } from 'react-leaflet';
 
 // 修正 marker 圖示在 React 中失效的問題
 delete L.Icon.Default.prototype._getIconUrl;
@@ -12,6 +13,16 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
 });
+
+const MapUpdater = ({ center }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    map.setView(center); // 更新地圖中心點
+  }, [center, map]);
+
+  return null;
+};
 
 const MapComponent = () => {
   const [currentPosition, setCurrentPosition] = useState([23.973875, 120.982024]); // 台灣中心
@@ -61,6 +72,7 @@ const MapComponent = () => {
       <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫療機構地圖</h2>
 
       <MapContainer center={currentPosition} zoom={13} style={{ height: '80vh', width: '100%' }}>
+        <MapUpdater center={currentPosition}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
