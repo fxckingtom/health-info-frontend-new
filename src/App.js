@@ -8,7 +8,7 @@ import MapComponent from './components/MapComponent';
 
 function App() {
   return (
-    <Router basename="/health-info-frontend-new">
+    <Router basename={process.env.PUBLIC_URL}>
       <Navbar />
       <Routes>
         <Route path="/"            element={<DiseaseList />} />
