@@ -28,7 +28,7 @@ const MapComponent = () => {
           // ✅ 查詢醫院 + 診所（移除 bias 參數）
           const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
           const radius = 5000;
-          const url = `https://api.geoapify.com/v2/places?categories=healthcare.hospital,healthcare.clinic&filter=circle:${lon},${lat},${radius}&limit=30&apiKey=${apiKey}`;
+          const url = `https://api.geoapify.com/v2/places?categories=healthcare.clinic_or_praxis.general,healthcare.pharmacy&filter=circle:${lon},${lat},${radius}&limit=30&apiKey=${apiKey}`;
 
           try {
             const response = await fetch(url);
