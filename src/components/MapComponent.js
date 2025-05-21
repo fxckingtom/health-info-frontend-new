@@ -13,28 +13,6 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
 });
 
-// 類別翻譯對照表（✅移到元件外層，宣告一次即可）
-const categoryTranslations = {
-  "healthcare.clinic_or_praxis": "診所",
-  "healthcare.clinic_or_praxis.allergology": "過敏科診所",
-  "healthcare.clinic_or_praxis.vascular_surgery": "血管外科診所",
-  "healthcare.clinic_or_praxis.urology": "泌尿科診所",
-  "healthcare.clinic_or_praxis.trauma": "創傷醫學診所",
-  "healthcare.clinic_or_praxis.rheumatology": "風濕免疫科診所",
-  "healthcare.clinic_or_praxis.radiology": "放射科診所",
-  "healthcare.clinic_or_praxis.pulmonology": "胸腔科診所",
-  "healthcare.clinic_or_praxis.psychiatry": "精神科診所",
-  "healthcare.clinic_or_praxis.paediatrics": "小兒科診所",
-  "healthcare.clinic_or_praxis.otolaryngology": "耳鼻喉科診所",
-  "healthcare.clinic_or_praxis.orthopaedics": "骨科診所",
-  "healthcare.clinic_or_praxis.ophthalmology": "眼科診所",
-  "healthcare.clinic_or_praxis.occupational": "職業醫學診所",
-  "healthcare.clinic_or_praxis.gynaecology": "婦產科診所",
-  "healthcare.clinic_or_praxis.general": "一般科診所",
-  "healthcare.dentist": "牙醫診所",
-  "healthcare.dentist.orthodontics": "牙齒矯正診所",
-  "building": "藥局"
-};
 
 const MapUpdater = ({ center }) => {
   const map = useMap();
@@ -72,11 +50,8 @@ const MapComponent = () => {
             }
 
             const results = data.features.map((place) => {
-              const rawCategory = place.properties.categories?.[0] || '未知機構';
-              const translatedCategory = categoryTranslations[rawCategory] || rawCategory;
               return {
                 name: place.properties.name || '無名稱機構',
-                type: translatedCategory,
                 position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
               };
             });
@@ -109,7 +84,6 @@ const MapComponent = () => {
           <Marker key={index} position={place.position}>
             <Popup>
               {place.name}<br />
-              類型：{place.type}
             </Popup>
           </Marker>
         ))}
