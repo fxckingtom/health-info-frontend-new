@@ -1,39 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import React, { useState, useEffect, useRef } from 'react';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 const MapComponent = () => {
-  // 地圖中心點的狀態
-  const [currentPosition, setCurrentPosition] = useState({ lat: 23.973875, lng: 120.982024 }); // 台灣的中心點
-  // 儲存醫院位置的狀態
+  // 使用者位置（預設為台灣中心）
+  const [currentPosition, setCurrentPosition] = useState({ lat: 23.973875, lng: 120.982024 });
+
+  // 醫院位置列表
   const [hospitalLocations, setHospitalLocations] = useState([]);
-  // 追蹤位置獲取狀態
+
+  // 是否出現定位錯誤
   const [locationError, setLocationError] = useState(false);
+
+  // 保存地圖參考物件
+  const mapRef = useRef(null);
 
   // 地圖樣式
   const mapStyles = {
-    height: '80vh', // 改為視窗高度 80%
+    height: '80vh',
     width: '100%',
   };
 
-  // 地圖載入完成後的回呼函式
+  // ✅ 地圖載入完成後執行的函式
   const onMapLoad = (map) => {
+    mapRef.current = map;
+
+    // 📍 建立 PlacesService 物件
     const service = new window.google.maps.places.PlacesService(map);
+
     const request = {
       location: currentPosition,
-      radius: 5000, // 搜尋半徑為 5 公里
-      type: ['hospital'], // 搜尋類型為醫院
+      radius: 5000, // 搜尋半徑 5 公里
+      type: ['hospital'], // 搜尋醫院
     };
 
+    // 🔍 搜尋附近的醫院
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        setHospitalLocations(results);
+        setHospitalLocations(results); // 儲存搜尋結果
       } else {
         console.error('無法載入附近醫院:', status);
       }
     });
+
+    // 📍 顯示使用者當前位置（使用 AdvancedMarkerElement）
+    const userMarker = new window.google.maps.marker.AdvancedMarkerElement({
+      map: map,
+      position: currentPosition,
+      title: '你的位置',
+    });
   };
 
-  // 取得使用者目前位置
+  // 🔄 每次 hospitalLocations 有變化時，加入醫院標記
+  useEffect(() => {
+    if (!mapRef.current || hospitalLocations.length === 0) return;
+
+    // 每個醫院都加上標記
+    hospitalLocations.forEach((hospital) => {
+      new window.google.maps.marker.AdvancedMarkerElement({
+        map: mapRef.current,
+        position: hospital.geometry.location,
+        title: hospital.name,
+      });
+    });
+  }, [hospitalLocations]);
+
+  // ✅ 嘗試取得使用者位置
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -63,9 +94,11 @@ const MapComponent = () => {
           無法獲取您的位置，已使用預設位置。
         </p>
       )}
+
+      {/* ✅ 注意：libraries 要寫成固定陣列避免效能警告 */}
       <LoadScript
         googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        libraries={['places']}
+        libraries={['places']} // 這裡固定寫死，不要每次都重建新陣列
       >
         <GoogleMap
           mapContainerStyle={mapStyles}
@@ -73,14 +106,7 @@ const MapComponent = () => {
           zoom={14}
           onLoad={onMapLoad}
         >
-          <Marker position={currentPosition} label="你的位置" />
-          {hospitalLocations.map((hospital) => (
-            <Marker
-              key={hospital.place_id || hospital.id || Math.random()} // 優先使用 place_id，否則使用隨機值作為臨時解決
-              position={hospital.geometry.location}
-              title={hospital.name}
-            />
-          ))}
+          {/* 所有標記都會在 onMapLoad 及 useEffect 中用 AdvancedMarkerElement 加入 */}
         </GoogleMap>
       </LoadScript>
     </div>
