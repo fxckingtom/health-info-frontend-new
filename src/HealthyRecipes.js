@@ -32,7 +32,7 @@ const HealthyRecipes = () => {
       let response;
       if (food) {
         response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/healthy-recipes-by-food?food=${food}`
+          `${process.env.REACT_APP_API_URL}/api/healthy-recipes/search?food=${food}`
         );
       } else {
         response = await axios.get(
