@@ -69,11 +69,17 @@ const MapComponent = () => {
           return;
         }
 
-        const results = data.features.map((place) => ({
-          name: place.properties.name || '無名稱機構',
-          address: place.properties.formatted || '地址未知',
-          position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-        }));
+const results = data.features.map((place) => {
+  const fullAddress = place.properties.formatted || '';
+  const addressWithoutZip = fullAddress.replace(/\b\d{5}\b/, ''); // 移除 5 位數郵遞區號
+
+  return {
+    name: place.properties.name || '無名稱機構',
+    address: addressWithoutZip.trim().replace(/,\s*,/g, ',').replace(/^,|,$/g, ''), // 清除多餘逗號
+    position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+  };
+});
+
 
         setPlaces(results);
       },
