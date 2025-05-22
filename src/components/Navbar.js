@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 
 function Navbar() {
   return (
-    <nav className="bg-primary text-white p-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-primary text-white h-16 py-2 shadow-md">
+      <div className="container mx-auto flex justify-between items-center px-4 md:px-6 lg:px-8">
         <Link to="/" className="text-2xl font-bold underline decoration-2 decoration-white">
           健康資訊網
         </Link>
-        <div className="space-x-4">
+        <div className="flex items-center space-x-6">
           <Link to="/" className="underline decoration-2 decoration-primary hover:decoration-white">
             首頁
           </Link>
