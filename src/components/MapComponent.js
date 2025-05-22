@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import './MapComponent.css';
+import '../MapComponent.css';
 
 // 自訂 Marker 圖示
 const blueIcon = new L.Icon({
