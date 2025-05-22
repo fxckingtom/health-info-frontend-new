@@ -32,8 +32,9 @@ const HealthyRecipes = () => {
       let response;
       if (food) {
         response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/healthy-recipes/search?food=${food}`
-        );
+  `${process.env.REACT_APP_API_URL}/api/healthy-recipes/search?q=${encodeURIComponent(food)}`
+);
+
       } else {
         response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/healthy-recipes`
