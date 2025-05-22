@@ -1,30 +1,21 @@
-// MapComponent.js
+// components/MapComponent.js
 
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import '../MapComponent.css'; 
 
-// 修正 marker 圖示在 React 中失效的問題
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
-});
-
-
+// 地圖自動更新位置元件
 const MapUpdater = ({ center }) => {
   const map = useMap();
-
   useEffect(() => {
     map.setView(center);
   }, [center, map]);
-
   return null;
 };
 
-// 自訂 Marker 圖示
+// 自訂圖示
 const blueIcon = new L.Icon({
   iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/images/marker-icon-2x-blue.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
@@ -43,10 +34,11 @@ const redIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-
 const MapComponent = () => {
   const [currentPosition, setCurrentPosition] = useState([23.973875, 120.982024]);
   const [places, setPlaces] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -69,12 +61,11 @@ const MapComponent = () => {
               return;
             }
 
-            const results = data.features.map((place) => {
-              return {
-                name: place.properties.name || '無名稱機構',
-                position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-              };
-            });
+            const results = data.features.map((place) => ({
+              name: place.properties.name || '無名稱機構',
+              address: place.properties.formatted || '無地址',
+              position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+            }));
 
             setPlaces(results);
           } catch (err) {
@@ -88,26 +79,55 @@ const MapComponent = () => {
     }
   }, []);
 
+  const filteredPlaces = places
+    .filter((place) => place.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .slice(0, 8);
+
   return (
-    <div>
-      <h2 style={{ textAlign: 'center', margin: '1rem 0' }}>📍 附近醫療機構地圖</h2>
-      <MapContainer center={currentPosition} zoom={13} style={{ height: '80vh', width: '100%' }}>
-        <MapUpdater center={currentPosition} />
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    <div className="map-page">
+      <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>📍 附近醫療機構查詢</h2>
+
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="搜尋醫療機構名稱"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <Marker position={currentPosition} icon={blueIcon}>
-          <Popup>你的位置</Popup>
-        </Marker>
-        {places.map((place, index) => (
-          <Marker key={index} position={place.position} icon={redIcon}>
-            <Popup>
-              {place.name}<br />
-            </Popup>
-          </Marker>
+      </div>
+
+      <div className="place-list">
+        {filteredPlaces.map((place, index) => (
+          <div key={index} className="place-card">
+            <h4>{place.name}</h4>
+            <p>{place.address}</p>
+          </div>
         ))}
-      </MapContainer>
+      </div>
+
+      <button className="map-toggle-button" onClick={() => setShowMap(!showMap)}>
+        {showMap ? '關閉地圖' : '開啟地圖'}
+      </button>
+
+      {showMap && (
+        <div className="mini-map">
+          <MapContainer center={currentPosition} zoom={13} style={{ height: '100%', width: '100%' }}>
+            <MapUpdater center={currentPosition} />
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            />
+            <Marker position={currentPosition} icon={blueIcon}>
+              <Popup>你的位置</Popup>
+            </Marker>
+            {places.map((place, index) => (
+              <Marker key={index} position={place.position} icon={redIcon}>
+                <Popup>{place.name}</Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
+      )}
     </div>
   );
 };
