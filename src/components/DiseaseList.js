@@ -62,7 +62,7 @@ function DiseaseList() {
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
       {/* 圖片滑動布告欄 */}
-      <div className="relative w-full h-48 mb-8 overflow-hidden rounded-lg">
+      <div className="relative w-full h-64 mb-8 overflow-hidden rounded-lg">
         <button onClick={()=>setCurrentIndex((currentIndex-1+announcements.length)%announcements.length)} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-primary-dark bg-opacity-50 text-white p-1 rounded-full z-10">&lt;</button>
         <button onClick={()=>setCurrentIndex((currentIndex+1)%announcements.length)} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary-dark bg-opacity-50 text-white p-1 rounded-full z-10">&gt;</button>
         {announcements.map((item,idx)=>(
