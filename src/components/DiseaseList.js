@@ -12,9 +12,10 @@ function DiseaseList() {
 
   // 公告事項，可從後端拉取或靜態定義
   const announcements = [
-    { image: '/images/資訊.jpg', text: '網站提供「健康資訊」，歡迎體驗' },
-    { image: '/images/食物.jpg', text: '網站提供「健康食譜」，歡迎體驗' },
+    { image: '/images/%E8%B3%87%E8%A8%8A.jpg', text: '網站提供「健康資訊」，歡迎體驗' },
+    { image: '/images/%E9%A3%9F%E7%89%A9.jpg', text: '網站提供「健康食譜」，歡迎體驗' },
   ];
+
 
   const healthTips = [
     '多喝水，保持水分充足。',
