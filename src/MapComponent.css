@@ -56,8 +56,8 @@
   position: fixed;
   bottom: 4rem;
   right: 1rem;
-  width: 350px;
-  height: 300px;
+  width: 90vw;  /* 原本是 350px */
+  height: 80vh; /* 原本是 300px */
   border: 2px solid #ccc;
   z-index: 999;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
