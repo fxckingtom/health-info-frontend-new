@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import ChatBot from './Chatbot';
+import announce1 from '../images/announce1.jpg';
+import announce1 from '../images/announce2.jpg';
+
 
 function DiseaseList() {
   const [diseases, setDiseases] = useState([]);
@@ -12,8 +15,8 @@ function DiseaseList() {
 
   // 公告事項，可從後端拉取或靜態定義
   const announcements = [
-    { image: '/images/%E8%B3%87%E8%A8%8A.jpg', text: '網站提供「健康資訊」，歡迎體驗' },
-    { image: '/images/%E9%A3%9F%E7%89%A9.jpg', text: '網站提供「健康食譜」，歡迎體驗' },
+    { image: announce1, text: '網站提供「健康資訊」，歡迎體驗' },
+    { image: announce2, text: '網站提供「健康食譜」，歡迎體驗' },
   ];
 
 
