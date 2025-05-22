@@ -5,7 +5,7 @@ function Navbar() {
     <nav className="bg-primary text-white shadow-md">
       <div className="container mx-auto flex items-center justify-between h-16 px-6 lg:px-8">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold leading-none">
+        <Link to="/" className="text-3xl font-bold leading-none">
           健康資訊網
         </Link>
 
@@ -21,7 +21,7 @@ function Navbar() {
             <Link
               key={item.to}
               to={item.to}
-              className="relative text-base font-medium leading-none py-1 hover:text-white/80"
+              className="relative text-lg font-medium leading-none py-1 hover:text-white/80"
             >
               {item.label}
               {/* 底部高亮條：平時透明，hover 時顯示 */}
