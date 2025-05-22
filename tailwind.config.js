@@ -3,11 +3,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        DEFAULT: '#6B8E23',
-        light:   '#8CAA4C',
-        dark:    '#4D6B1A'
-      },
-    },
+        primary: {
+          DEFAULT: '#6B8E23',
+          light:   '#8CAA4C', // Optional：根据需要自己调亮度
+          dark:    '#4D6B1A'
+        }
+      }
+    }
   },
   plugins: [],
 };
