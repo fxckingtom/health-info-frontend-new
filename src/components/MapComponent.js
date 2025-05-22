@@ -1,21 +1,12 @@
-// components/MapComponent.js
+// MapComponent.js
 
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import '../MapComponent.css'; 
+import './MapComponent.css';
 
-// 地圖自動更新位置元件
-const MapUpdater = ({ center }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center);
-  }, [center, map]);
-  return null;
-};
-
-// 自訂圖示
+// 自訂 Marker 圖示
 const blueIcon = new L.Icon({
   iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/images/marker-icon-2x-blue.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
@@ -34,95 +25,116 @@ const redIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
+// 地圖中心點更新元件
+const MapUpdater = ({ center }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center);
+  }, [center, map]);
+  return null;
+};
+
 const MapComponent = () => {
   const [currentPosition, setCurrentPosition] = useState([23.973875, 120.982024]);
   const [places, setPlaces] = useState([]);
+  const [mapVisible, setMapVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [showMap, setShowMap] = useState(false);
+  const [currentAddress, setCurrentAddress] = useState('');
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const lat = pos.coords.latitude;
-          const lon = pos.coords.longitude;
-          setCurrentPosition([lat, lon]);
+    if (!navigator.geolocation) return;
 
-          const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
-          const radius = 5000;
-          const url = `https://api.geoapify.com/v2/places?categories=healthcare&filter=circle:${lon},${lat},5000&limit=100&lang=zh&apiKey=${apiKey}`;
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        setCurrentPosition([lat, lon]);
 
-          try {
-            const response = await fetch(url);
-            const data = await response.json();
+        const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
 
-            if (!data.features) {
-              console.error('API 回傳錯誤，內容如下:', data);
-              return;
-            }
+        // 取得中文地址
+        const geocodeUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&lang=zh&apiKey=${apiKey}`;
+        const geocodeRes = await fetch(geocodeUrl);
+        const geocodeData = await geocodeRes.json();
+        const formatted = geocodeData?.features?.[0]?.properties?.formatted || '無法取得中文地址';
+        setCurrentAddress(formatted);
 
-            const results = data.features.map((place) => ({
-              name: place.properties.name || '無名稱機構',
-              address: place.properties.formatted || '無地址',
-              position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-            }));
+        // 取得醫療機構
+        const radius = 5000;
+        const placesUrl = `https://api.geoapify.com/v2/places?categories=healthcare&filter=circle:${lon},${lat},${radius}&limit=100&lang=zh&apiKey=${apiKey}`;
+        const res = await fetch(placesUrl);
+        const data = await res.json();
 
-            setPlaces(results);
-          } catch (err) {
-            console.error('搜尋失敗:', err);
-          }
-        },
-        (err) => {
-          console.error('定位失敗，使用預設位置:', err.message);
+        if (!data.features) {
+          console.error('API 回傳錯誤:', data);
+          return;
         }
-      );
-    }
+
+        const results = data.features.map((place) => ({
+          name: place.properties.name || '無名稱機構',
+          address: place.properties.formatted || '地址未知',
+          position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+        }));
+
+        setPlaces(results);
+      },
+      (err) => {
+        console.error('定位失敗:', err.message);
+      }
+    );
   }, []);
 
   const filteredPlaces = places
-    .filter((place) => place.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    .slice(0, 8);
+    .filter((p) => p.name.includes(searchTerm))
+    .slice(0, 100);
 
   return (
-    <div className="map-page">
-      <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>📍 附近醫療機構查詢</h2>
+    <div className="map-wrapper">
+      <h2 className="map-title">📍 附近醫療機構</h2>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="搜尋醫療機構名稱"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <input
+        className="search-bar"
+        type="text"
+        placeholder="搜尋醫療機構名稱..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      <div className="current-location">
+        <strong>你的位置：</strong> {currentAddress}
       </div>
 
       <div className="place-list">
         {filteredPlaces.map((place, index) => (
           <div key={index} className="place-card">
-            <h4>{place.name}</h4>
-            <p>{place.address}</p>
+            <strong>{place.name}</strong><br />
+            📍 {place.address}
           </div>
         ))}
       </div>
 
-      <button className="map-toggle-button" onClick={() => setShowMap(!showMap)}>
-        {showMap ? '關閉地圖' : '開啟地圖'}
+      {/* 地圖按鈕與地圖區塊 */}
+      <button className="toggle-map-btn" onClick={() => setMapVisible(!mapVisible)}>
+        {mapVisible ? '🔽 收起地圖' : '🗺️ 展開地圖'}
       </button>
 
-      {showMap && (
-        <div className="mini-map">
+      {mapVisible && (
+        <div className="map-container">
           <MapContainer center={currentPosition} zoom={13} style={{ height: '100%', width: '100%' }}>
             <MapUpdater center={currentPosition} />
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              attribution='&copy; OpenStreetMap'
             />
             <Marker position={currentPosition} icon={blueIcon}>
               <Popup>你的位置</Popup>
             </Marker>
             {places.map((place, index) => (
               <Marker key={index} position={place.position} icon={redIcon}>
-                <Popup>{place.name}</Popup>
+                <Popup>
+                  {place.name}<br />
+                  {place.address}
+                </Popup>
               </Marker>
             ))}
           </MapContainer>
