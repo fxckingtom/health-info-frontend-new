@@ -9,6 +9,13 @@ function DiseaseList() {
   const [healthTip, setHealthTip] = useState('');
   const [error, setError] = useState(null);
 
+  // 公告事項，可從後端拉取或靜態定義
+  const announcements = [
+    '網站將於 6/1 進行維護，屆時無法使用部分功能',
+    '新增「健康食譜」分類篩選，歡迎體驗',
+    '歡迎加入我們的社群，獲取最新健康文章'
+  ];
+
   const healthTips = [
     '多喝水，保持水分充足。',
     '每天運動 30 分鐘，提升心肺功能。',
@@ -76,6 +83,16 @@ function DiseaseList() {
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
+      {/* 公告布告欄 */}
+      <div className="bg-primary-light text-primary rounded-lg p-4 mb-8">
+        <h3 className="text-xl font-semibold mb-2">最新公告</h3>
+        <ul className="list-disc list-inside">
+          {announcements.map((note, idx) => (
+            <li key={idx}>{note}</li>
+          ))}
+        </ul>
+      </div>
+
       <h1 className="text-4xl font-bold text-primary mb-8 text-center animate-fade-in">
         探索常見疾病
       </h1>
