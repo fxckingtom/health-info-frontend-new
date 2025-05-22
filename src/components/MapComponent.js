@@ -50,7 +50,7 @@ const MapComponent = () => {
 
           const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
           const radius = 5000;
-          const url = `https://api.geoapify.com/v2/places?categories=healthcare&filter=circle:${lon},${lat},${radius}&limit=30&apiKey=${apiKey}`;
+          const url = `https://api.geoapify.com/v2/places?categories=healthcare&filter=circle:${lon},${lat},5000&limit=100&lang=zh&apiKey=${apiKey}`;
 
           try {
             const response = await fetch(url);
