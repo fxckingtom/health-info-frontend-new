@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import ChatBot from './Chatbot';
 import announce1 from '../images/announce1.jpg';
-import announce1 from '../images/announce2.jpg';
+import announce2 from '../images/announce2.jpg';
 
 
 function DiseaseList() {
