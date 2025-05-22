@@ -1,20 +1,20 @@
-// MapComponent.js
-
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../MapComponent.css';
 
-// 自訂 Marker 圖示
+// 藍色圖標（使用你修正後的正確 URL）
 const blueIcon = new L.Icon({
-  iconUrl: 'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=home|00f',
-  iconSize: [30, 50],
-  iconAnchor: [15, 50],
-  popupAnchor: [0, -40],
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
 });
 
-
+// 紅色圖標
 const redIcon = new L.Icon({
   iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/images/marker-icon-2x.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
@@ -51,14 +51,15 @@ const MapComponent = () => {
 
         const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
 
-        // 取得中文地址
+        // 取得使用者中文地址並移除郵遞區號
         const geocodeUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&lang=zh&apiKey=${apiKey}`;
         const geocodeRes = await fetch(geocodeUrl);
         const geocodeData = await geocodeRes.json();
-        const formatted = geocodeData?.features?.[0]?.properties?.formatted || '無法取得中文地址';
-        setCurrentAddress(formatted);
+        const rawFormatted = geocodeData?.features?.[0]?.properties?.formatted || '無法取得中文地址';
+        const addressWithoutZip = rawFormatted.replace(/\b\d{5}\b/, '').trim().replace(/,\s*,/g, ',').replace(/^,|,$/g, '');
+        setCurrentAddress(addressWithoutZip);
 
-        // 取得醫療機構
+        // 取得醫療機構列表（含中文地址、無郵遞區號）
         const radius = 5000;
         const placesUrl = `https://api.geoapify.com/v2/places?categories=healthcare&filter=circle:${lon},${lat},${radius}&limit=100&lang=zh&apiKey=${apiKey}`;
         const res = await fetch(placesUrl);
@@ -69,17 +70,16 @@ const MapComponent = () => {
           return;
         }
 
-const results = data.features.map((place) => {
-  const fullAddress = place.properties.formatted || '';
-  const addressWithoutZip = fullAddress.replace(/\b\d{5}\b/, ''); // 移除 5 位數郵遞區號
+        const results = data.features.map((place) => {
+          const fullAddress = place.properties.formatted || '';
+          const cleanAddress = fullAddress.replace(/\b\d{5}\b/, '').trim().replace(/,\s*,/g, ',').replace(/^,|,$/g, '');
 
-  return {
-    name: place.properties.name || '無名稱機構',
-    address: addressWithoutZip.trim().replace(/,\s*,/g, ',').replace(/^,|,$/g, ''), // 清除多餘逗號
-    position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-  };
-});
-
+          return {
+            name: place.properties.name || '無名稱機構',
+            address: cleanAddress,
+            position: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+          };
+        });
 
         setPlaces(results);
       },
@@ -118,7 +118,6 @@ const results = data.features.map((place) => {
         ))}
       </div>
 
-      {/* 地圖按鈕與地圖區塊 */}
       <button className="toggle-map-btn" onClick={() => setMapVisible(!mapVisible)}>
         {mapVisible ? '🔽 收起地圖' : '🗺️ 展開地圖'}
       </button>
