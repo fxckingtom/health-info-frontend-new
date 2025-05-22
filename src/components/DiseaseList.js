@@ -8,12 +8,12 @@ function DiseaseList() {
   const [selectedDisease, setSelectedDisease] = useState(null);
   const [healthTip, setHealthTip] = useState('');
   const [error, setError] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // 公告事項，可從後端拉取或靜態定義
   const announcements = [
-    '網站將於 6/1 進行維護，屆時無法使用部分功能',
-    '新增「健康食譜」分類篩選，歡迎體驗',
-    '歡迎加入我們的社群，獲取最新健康文章'
+    { image: '/images/資訊.jpg', text: '網站提供「健康資訊」，歡迎體驗' },
+    { image: '/images/食物.jpg', text: '網站提供「健康食譜」，歡迎體驗' },
   ];
 
   const healthTips = [
@@ -47,50 +47,26 @@ function DiseaseList() {
         setError('無法載入疾病數據，請稍後再試');
       });
 
-    setHealthTip(
-      healthTips[Math.floor(Math.random() * healthTips.length)]
-    );
+    setHealthTip(healthTips[Math.floor(Math.random()*healthTips.length)]);
   }, []);
 
-  const refreshTip = () => {
-    setHealthTip(
-      healthTips[Math.floor(Math.random() * healthTips.length)]
-    );
-  };
+  const refreshTip = () => setHealthTip(healthTips[Math.floor(Math.random()*healthTips.length)]);
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.2, duration: 0.5, ease: 'easeOut' }
-    })
-  };
-
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.3, ease: 'easeOut' }
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.8,
-      transition: { duration: 0.2 }
-    }
-  };
+  const cardVariants = { hidden:{opacity:0,y:50}, visible:i=>({opacity:1,y:0,transition:{delay:i*0.2,duration:0.5,ease:'easeOut'}})};
+  const modalVariants = { hidden:{opacity:0,scale:0.8}, visible:{opacity:1,scale:1,transition:{duration:0.3,ease:'easeOut'}}, exit:{opacity:0,scale:0.8,transition:{duration:0.2}}};
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
-      {/* 公告布告欄 */}
-      <div className="bg-primary-light text-primary rounded-lg p-4 mb-8">
-        <h3 className="text-xl font-semibold mb-2">最新公告</h3>
-        <ul className="list-disc list-inside">
-          {announcements.map((note, idx) => (
-            <li key={idx}>{note}</li>
-          ))}
-        </ul>
+      {/* 圖片滑動布告欄 */}
+      <div className="relative w-full h-48 mb-8 overflow-hidden rounded-lg">
+        <button onClick={()=>setCurrentIndex((currentIndex-1+announcements.length)%announcements.length)} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-primary-dark bg-opacity-50 text-white p-1 rounded-full z-10">&lt;</button>
+        <button onClick={()=>setCurrentIndex((currentIndex+1)%announcements.length)} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary-dark bg-opacity-50 text-white p-1 rounded-full z-10">&gt;</button>
+        {announcements.map((item,idx)=>(
+          <motion.div key={idx} initial={{opacity:0}} animate={{opacity:idx===currentIndex?1:0}} transition={{duration:0.5}} className="absolute inset-0">
+            <img src={item.image} alt="公告" className="object-cover w-full h-full" />
+            {item.text && <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-primary-dark bg-opacity-70 px-4 py-2 rounded"><p className="text-white">{item.text}</p></div>}
+          </motion.div>
+        ))}
       </div>
 
       <h1 className="text-4xl font-bold text-primary mb-8 text-center animate-fade-in">
