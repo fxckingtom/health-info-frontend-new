@@ -10,6 +10,7 @@ function App() {
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <Navbar />
+  <main className="container mx-auto px-4 md:px-6 lg:px-8 flex-1">
       <Routes>
         <Route path="/"            element={<DiseaseList />} />
         <Route path="/health-info" element={<HealthInfo   />} />
