@@ -16,7 +16,12 @@
   margin: 0 auto 1rem auto;
   padding: 0.5rem;
   font-size: 1rem;
+  border: 1px solid #ccc;         /* ✅ 加上邊框 */
+  border-radius: 8px;             /* ✅ 圓角 */
+  background-color: #fff;         /* ✅ 白底 */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* ✅ 微陰影增加可視性 */
 }
+
 
 .current-location {
   text-align: center;
