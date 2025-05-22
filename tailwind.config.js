@@ -4,9 +4,9 @@ module.exports = {
     container: {
       center: true,          // 自动水平居中
       padding: {
-        DEFAULT: '1rem',     // 默认左右 1rem
-        sm:      '2rem',     // sm 断点以上 2rem
-        lg:      '4rem',     // lg 以上 4rem
+        DEFAULT: '1rem',  // 小屏左右各 16px
+        sm:      '2rem',  // sm 以上各 32px
+        lg:      '4rem',  // lg 以上各 64px
         xl:      '5rem',
         '2xl':   '6rem',
       },
