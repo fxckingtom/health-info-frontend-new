@@ -33,14 +33,14 @@ function Chatbot() {
     <div className="fixed bottom-4 right-4">
       {isOpen ? (
         <div className="bg-white w-80 h-96 rounded-lg shadow-lg flex flex-col">
-          <div className="bg-blue-600 text-white p-3 rounded-t-lg flex justify-between">
+          <div className="bg-primary text-white p-3 rounded-t-lg flex justify-between">
             <span>健康助理</span>
             <button onClick={() => setIsOpen(false)} className="text-white">X</button>
           </div>
           <div className="flex-1 p-4 overflow-y-auto">
             {messages.map((msg, index) => (
               <div key={index} className={`mb-2 ${msg.sender === 'user' ? 'text-right' : ''}`}>
-                <span className={`inline-block p-2 rounded-lg ${msg.sender === 'user' ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                <span className={`inline-block p-2 rounded-lg ${msg.sender === 'user' ? 'bg-primary-light' : 'bg-gray-100'}`}>
                   {msg.text}
                 </span>
               </div>
@@ -60,7 +60,7 @@ function Chatbot() {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700"
+          className="bg-primary text-white p-4 rounded-full shadow-lg hover:bg-primary-dark"
         >
           對話
         </button>
