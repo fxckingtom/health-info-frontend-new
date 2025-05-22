@@ -106,7 +106,7 @@ function HealthInfo() {
               </ul>
               <button
                 onClick={() => setSelectedDisease(null)}
-                className="w-full bg-primary text-white p-2 rounded hover:bg-blue-700 transition"
+                className="w-full bg-primary text-white p-2 rounded hoverbg-primary-dark transition"
               >
                 關閉
               </button>
