@@ -36,13 +36,11 @@ function HealthLog() {
     }));
   };
 
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post(`${API_URL}/api/health-log`, formData);
-      // 預置：最新的一筆放在最前面
       setLogs([res.data, ...logs]);
-      // 重設表單
       setFormData({
         bloodPressure: '',
         weight: '',
@@ -56,7 +54,6 @@ function HealthLog() {
     }
   };
 
-  // 3) 刪除（如果你也開了 DELETE endpoint）
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${API_URL}/api/health-log/${id}`);
@@ -141,7 +138,7 @@ function HealthLog() {
         </div>
         <button
           type="submit"
-          className="w-full bg-primary text-white p-2 rounded hover:bg-blue-700 transition"
+          className="w-full bg-primary text-white p-2 rounded hover:bg-primary-dark transition"
         >
           記錄
         </button>
