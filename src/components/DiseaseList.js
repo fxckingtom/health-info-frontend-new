@@ -7,6 +7,13 @@ import announce2 from '../images/announce2.jpg';
 
 
 function DiseaseList() {
+  // 自動輪播 index
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((i) => (i + 1) % announcements.length);
+    }, 5000); // 每 5 秒切換一次
+    return () => clearInterval(timer);
+  }, []);
   const [diseases, setDiseases] = useState([]);
   const [selectedDisease, setSelectedDisease] = useState(null);
   const [healthTip, setHealthTip] = useState('');
