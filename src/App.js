@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import DiseaseList from './components/DiseaseList';
 import HealthInfo   from './components/HealthInfo';
 import HealthLog    from './components/HealthLog';
@@ -8,7 +8,7 @@ import MapComponent from './components/MapComponent';
 
 function App() {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <Router>
       <Navbar />
       <main className="container mx-auto px-4 md:px-6 lg:px-8">
       <Routes>
