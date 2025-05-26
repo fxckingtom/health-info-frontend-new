@@ -6,7 +6,7 @@ function Navbar() {
       <div className="container mx-auto flex items-center justify-between h-16 px-6 lg:px-8">
         {/* Logo */}
         <Link to="/" className="text-3xl font-bold leading-none">
-          健康資訊網
+          線上照護手冊
         </Link>
 
         {/* 菜單項 */}
